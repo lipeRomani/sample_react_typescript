@@ -12,17 +12,21 @@ import Hello from './containers/Hello';
 import { GenericStoreEnhancer } from 'redux';
 
 const DEV_TOOLS_EXTENSION = 'devToolsExtension';
+
 const devToolsExtension: GenericStoreEnhancer = window[DEV_TOOLS_EXTENSION] ?
   window[DEV_TOOLS_EXTENSION]() : f => f;
 
-const store = createStore<StoreState>(enthusiasm, {
-  enthusiasmLevel: 1,
-  languageName: 'TypeScript'
-// tslint:disable-next-line:align
-}, compose(
+const defaultStore = {
+    enthusiasmLevel: 1,
+    languageName: 'TypeScript'
+  };
+
+const enhancer = compose(
   applyMiddleware(thunk, logger),
   devToolsExtension
-) as GenericStoreEnhancer);
+) as GenericStoreEnhancer;
+
+const store = createStore<StoreState>(enthusiasm, defaultStore, enhancer);
 
 ReactDOM.render(
   <Provider store={store}>
